@@ -22,7 +22,7 @@ cls_color_map = {
 polygons_per_class = get_polygons_per_class(
     color_mask=color_mask,
     cls_color_map=cls_color_map,
-    min_area=100,
+    min_area=100.0,
     epsilon_param=8e-4,
 )
 ```
