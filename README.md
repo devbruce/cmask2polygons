@@ -4,6 +4,14 @@ Convert Color label mask to Polygons per class
 
 <br><br>
 
+## Install
+
+```bash
+$ pip install cmask2polygons
+```
+
+<br><br>
+
 ## How to Use
 
 ```python
