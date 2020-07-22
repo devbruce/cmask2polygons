@@ -54,4 +54,4 @@ polygons_per_class = get_polygons_per_class(
 
 - Data type: `dict`
   - Key: Class name (`str`)
-  - Value: list of polygon x (`int`), y (`int`) coordinates
+  - Value: list of polygon x (`pt_type`), y (`pt_type`) coordinates
