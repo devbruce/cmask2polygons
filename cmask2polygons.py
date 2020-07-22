@@ -30,7 +30,7 @@ def _get_bin_mask(color_mask, cls_name, cls_color_map):
     return mask
 
 
-def _get_polygons_from_bin_mask(bin_mask, min_area, epsilon_param):
+def _get_polygons_from_bin_mask(bin_mask, min_area, epsilon_param, pt_type, add_closept):
     contours, _ = cv2.findContours(bin_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)  # contours, hierarchy
 
     contour_approxed_list = list()
@@ -39,26 +39,27 @@ def _get_polygons_from_bin_mask(bin_mask, min_area, epsilon_param):
         epsilon = epsilon_param * cv2.arcLength(curve=contour, closed=True)
         contour_approxed = cv2.approxPolyDP(curve=contour, epsilon=epsilon, closed=True)
 
-        # Convert data type of contours for serializing (np.ndarray --> list, np.int64 --> int)
+        # Convert data type of contours for serializing (np.ndarray --> list, np.int64 --> pt_type)
         contour_approxed_converted = list()
         for xy in contour_approxed:
-            xy = list(map(int, xy[0]))
+            xy = list(map(pt_type, xy[0]))
             contour_approxed_converted.append(xy)
 
         # Append end point for representing closed
-        contour_approxed_converted.append(contour_approxed_converted[0])
+        if add_closept:
+            contour_approxed_converted.append(contour_approxed_converted[0])
         
         contour_approxed_list.append(contour_approxed_converted)
     return contour_approxed_list
 
 
-def get_polygons_per_class(color_mask, cls_color_map, min_area=100.0, epsilon_param=8e-4):
+def get_polygons_per_class(color_mask, cls_color_map, min_area=100.0, epsilon_param=8e-4, pt_type=int, add_closept=False):
     classes = _get_cls_from_color_mask(color_mask=color_mask, cls_color_map=cls_color_map)
 
     polygons_per_class = dict()
     for cls in classes:
         bin_mask = _get_bin_mask(color_mask=color_mask, cls_name=cls, cls_color_map=cls_color_map)
         bin_mask = cv2.cvtColor(bin_mask, cv2.COLOR_RGB2GRAY)
-        polygons = _get_polygons_from_bin_mask(bin_mask=bin_mask, min_area=min_area, epsilon_param=epsilon_param)
+        polygons = _get_polygons_from_bin_mask(bin_mask=bin_mask, min_area=min_area, epsilon_param=epsilon_param, pt_type=pt_type, add_closept=add_closept)
         polygons_per_class[cls] = polygons
     return polygons_per_class

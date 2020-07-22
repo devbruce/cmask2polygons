@@ -13,7 +13,7 @@ setup(
     long_description=open(README_PATH, encoding='utf-8').read(),
     long_description_content_type='text/markdown',
     license='MIT',
-    version='1.0.0',
+    version='1.1.0',
     url='https://github.com/DevBruce/cmask2polygons',
     py_modules=['cmask2polygons'],
     keywords=['mask', 'polygon'],
