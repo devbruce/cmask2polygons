@@ -20,14 +20,15 @@ def _get_cls_from_color_mask(color_mask, cls_color_map):
     return classes
 
 
-def _get_bin_mask(color_mask, cls_name, cls_color_map):
-    mask = color_mask.copy()
+def _get_bin_mask(color_mask, cls_name, cls_color_map):    
     color = cls_color_map[cls_name]
-    cls_pixels = np.all(mask==color, axis=-1)
-
-    mask[cls_pixels] = [255, 255, 255]
-    mask[~cls_pixels] = [0, 0, 0]
-    return mask
+    cls_pixels = np.all(color_mask==color, axis=-1)
+    
+    height, width, _ = color_mask.shape
+    bin_mask = np.zeros([height, width])
+    bin_mask[cls_pixels] = 255
+    bin_mask[~cls_pixels] = 0
+    return bin_mask.astype(np.uint8)
 
 
 def _get_polygons_from_bin_mask(bin_mask, min_area, epsilon_param, pt_type, add_closept):
@@ -59,7 +60,6 @@ def get_polygons_per_class(color_mask, cls_color_map, min_area=100.0, epsilon_pa
     polygons_per_class = dict()
     for cls in classes:
         bin_mask = _get_bin_mask(color_mask=color_mask, cls_name=cls, cls_color_map=cls_color_map)
-        bin_mask = cv2.cvtColor(bin_mask, cv2.COLOR_RGB2GRAY)
         polygons = _get_polygons_from_bin_mask(bin_mask=bin_mask, min_area=min_area, epsilon_param=epsilon_param, pt_type=pt_type, add_closept=add_closept)
         polygons_per_class[cls] = polygons
     return polygons_per_class
