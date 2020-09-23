@@ -6,7 +6,7 @@ __all__ = ['get_polygons_per_class']
 
 
 def _get_unique_colors(img_arr):
-    return np.unique(img_arr.reshape(-1, img_arr.shape[2]), axis=0)
+    return np.unique(img_arr.reshape(-1, 3), axis=0)
 
 
 def _get_cls_from_color_mask(color_mask, cls_color_map):
